@@ -12,7 +12,7 @@ const { get, oAuthGet, oAuthPost, oAuthDelete } = require('./goodreads-request')
  * @param {string} callbackURL callbackURL to get user access
  * @returns {object} Goodreads API object
  */
-const Goodreads = function(credentials, callbackURL) {
+const Goodreads = function (credentials, callbackURL) {
   if (!credentials || !credentials.key || !credentials.secret) throw new GoodreadsApiError('Please pass your API key and secret.', 'Goodreads()');
   if (callbackURL) initOAuth(callbackURL);
 
@@ -29,14 +29,14 @@ const Goodreads = function(credentials, callbackURL) {
 
 
   /**
-   * _setAccessToken
+   * setAccessToken
    *
-   * @access private
    * @param {object} token ACCESS_TOKEN and ACCESS_TOKEN_SECRET
    */
-  function _setAccessToken(token) {
+  function setAccessToken(token) {
     ACCESS_TOKEN = token.ACCESS_TOKEN;
     ACCESS_TOKEN_SECRET = token.ACCESS_TOKEN_SECRET;
+    OAUTHENTICATED = true;
   };
 
   /**
@@ -137,10 +137,9 @@ const Goodreads = function(credentials, callbackURL) {
         OAUTH.getOAuthAccessToken(OAUTH_TOKEN, OAUTH_TOKEN_SECRET, 1, (error, accessToken, accessTokenSecret, results) => {
           if (error) reject(new GoodreadsApiError(error.data.split("\n")[0], 'getAccessToken()'));
 
-          _setAccessToken({ ACCESS_TOKEN: accessToken, ACCESS_TOKEN_SECRET: accessTokenSecret });
-          OAUTHENTICATED = true;
+          setAccessToken({ ACCESS_TOKEN: accessToken, ACCESS_TOKEN_SECRET: accessTokenSecret });
 
-          resolve();
+          resolve(_getAccessToken());
         });
       } else reject(new GoodreadsApiError("No Request Token found. call getRequestToken()"));
     });
@@ -1095,6 +1094,7 @@ const Goodreads = function(credentials, callbackURL) {
     getRequestToken,
     getAccessToken,
     _setOAuthToken,
+    setAccessToken,
     getBooksByAuthor,
     getAuthorInfo,
     getAllSeriesByAuthor,
