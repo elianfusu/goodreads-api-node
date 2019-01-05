@@ -10,7 +10,8 @@
   "module": "dist/goodreads-api-node.es.js",
   "scripts": {
     "compile": "rollup -c",
-    "test": "mocha"
+    "test": "mocha",
+    "build": "webpack --config webpack.conf.js"
   },
   "author": "Bastian Ahrens <bahrens@compeon.de>",
   "license": "MIT",
